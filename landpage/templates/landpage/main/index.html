@@ -1,0 +1,212 @@
+{% extends 'landpage/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="intro-text">
+            <div class="intro-lead-in">
+                Welcome to the party!
+            </div>
+            <div class="intro-heading">
+                Let's start spreading:)
+            </div>
+            <a onclick="ajax_popup_register();" class="btn btn-xl">
+                Register
+            </a>
+        </div>
+    </div>
+</header>
+
+
+<!-- Services Section -->
+<section id="services">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">Why plan with us?</h2>
+                <h3 class="section-subheading text-muted">you can plan your event and let everyone know</h3>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa fa-users fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="service-heading">easy for you</h4>
+                <p class="text-muted">Event Planner helps you broadcast your event by sitting at home.....to an audience eager to participate.</p>
+            </div>
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa fa-graduation-cap fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="service-heading">global outreach</h4>
+                <p class="text-muted">Event Planner helps expands your horizon of reach so you can expect a large participation of like minded people.</p>
+            </div>
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fa fa-code-fork fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="service-heading">Open Source</h4>
+                <p class="text-muted">Event Planner is a tool that can be used by anyone and seen by everyone. Open Source Code ensures all can participate securely.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Courses Section -->
+{% if top_courses.count > 0 %}
+<section id="portfolio" class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">Events</h2>
+                <h3 class="section-subheading text-muted">Pick from the available courses:</h3>
+            </div>
+        </div>
+        <div class="row">
+            {% for top_pick in top_courses %}
+            <div class="col-md-4 col-sm-6 portfolio-item">
+                <a href="#portfolioModal1" class="portfolio-link"
+            data-toggle="modal"
+                onclick="ajax_popup_course_preview({{ top_pick.course.id }});";>
+                    <div class="portfolio-hover">
+                        <div class="portfolio-hover-content">
+                            <i class="fa fa-plus fa-3x"></i>
+                        </div>
+                    </div>
+                    {% if top_pick.course.image == '' %}
+                    <img src="{% static 'img/dummy.png' %}"
+                        class="img-responsive" alt="">
+                    {% else %}
+                    <img src="{{ top_pick.course.image.url }}"
+                        class="img-responsive" alt="">
+                    {% endif %}
+                    
+                        </a>
+                <div class="portfolio-caption">
+                    <h4>{{ top_pick.course.title }}</h4>
+                    <p class="text-muted">{{ top_pick.course.category }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+
+
+
+<!-- Clients Aside -->
+<aside class="clients">
+    <div class="container">
+        <div class="row">
+            {% for partner in partners %}
+            <div class="col-md-3 col-sm-6">
+                <a href="http://{{ partner.url }}">
+                    <img src="{% static 'img/' %}logos/{{ partner.image_filename }}"
+                       class="img-responsive img-centered"
+                         alt=""{{ partner.title }}>
+                </a>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</aside>
+
+
+
+<!-- Contact Us Section -->
+<section id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">Contact Us</h2>
+                <h3 class="section-subheading text-muted">Any comments, issues, or suggestions will be read by one of the staff.</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <form name="sentMessage" id="contactForm" novalidate="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ contact_form.name }}
+                                <p id="id_contact_name_danger" class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                {{ contact_form.email }}
+                                <p id="id_contact_email_danger" class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                {{ contact_form.phone }}
+                                <p id="id_contact_phone_danger" class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ contact_form.message }}
+                                <p id="id_contact_message_danger" class="help-block text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                {{ contact_form.captcha }}
+                                <p id="id_contact_captcha_danger" class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-lg-12 text-center">
+                            <div id="success"></div>
+                            <button onclick="ajax_send_message();"
+                                         id="id_send_msg_btn"
+                                       name="send_msg_btn"
+                                       type="button"
+                                      class="btn btn-xl">Send Message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline quicklinks">
+                    <li><a href="/privacy">Privacy Policy</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<!----------------------------------------------------------------------------->
+
+<!-- Modal -->
+<div id="ajax_response_course_preview"
+   name="ajax_response_course_preview"></div>
+<div id="ajax_response_login"></div>
+<div id="ajax_response_register"></div>
+<!-- end modal -->
+
+<!----------------------------------------------------------------------------->
+
+{% include "landpage/main/js.html" %}
+
+
+{% endblock content %}
